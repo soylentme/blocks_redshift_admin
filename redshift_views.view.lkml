@@ -1,6 +1,7 @@
 view: redshift_db_space {
   derived_table: {
     sql: select name as table
+        --comment
         , trim(pgn.nspname) as schema
         , sum(b.mbytes) as megabytes
         , sum(a.rows) as rows
@@ -65,6 +66,7 @@ view: redshift_db_space {
 view: redshift_etl_errors {
   derived_table: {
     sql: select starttime as error_time
+        --comment
         , filename as file_name
         , colname as column_name
         , type as column_data_type
@@ -113,6 +115,7 @@ view: redshift_etl_errors {
 view: redshift_data_loads {
   derived_table: {
     sql: select replace(regexp_substr(filename, '//[a-zA-Z0-9\-]+/'), '/', '') as root_bucket
+        --comment
         , replace(filename, split_part(filename, '/', regexp_count(filename, '/') + 1), '') as s3_path
         , regexp_replace(replace(filename, split_part(filename, '/', regexp_count(filename, '/') + 1), ''), '([\\d]{5,}|[\\d\-]{5,}/)', '') as s3_path_clean
         , split_part(filename, '/', regexp_count(filename, '/') + 1) as file_name
@@ -174,6 +177,7 @@ view: redshift_plan_steps {
     sql_trigger_value: SELECT FLOOR((EXTRACT(epoch from GETDATE()) - 60*60*23)/(60*60*24)) ;; #23h
     sql:
         SELECT
+        --comment
         query, nodeid, parentid,
         CASE WHEN plannode='SubPlan' THEN 'SubPlan'
         ELSE substring(regexp_substr(plannode, 'XN( [A-Z][a-z]+)+'),4) END as operation,
@@ -351,6 +355,7 @@ view: redshift_queries {
   derived_table: {
     sql_trigger_value: SELECT FLOOR((EXTRACT(epoch from GETDATE()) - 60*60*22)/(60*60*24)) ;; #22h
     sql: SELECT
+        --comment
         wlm.query,
         q.substring::varchar,
         sc.name as service_class,
@@ -502,7 +507,10 @@ view: redshift_slices {
   derived_table: {
     #sql_trigger_value: SELECT FLOOR((EXTRACT(epoch from GETDATE()) - 60*60*22)/(60*60*24)) ;; #22h
     persist_for: "12 hours"
-    sql: SELECT slice,node FROM STV_SLICES;;
+    sql: SELECT
+    slice,
+    node
+    FROM STV_SLICES;;
     distribution_style: "all"
     sortkeys: ["node"]
   }
@@ -531,6 +539,7 @@ view: redshift_tables {
     # Insert into PDT because redshift won't allow joining certain system tables/views onto others (presumably because they are located only on the leader node)
     persist_for: "8 hours"
     sql: select
+        --comment
         "database"::varchar,
         "schema"::varchar,
         "Table_id"::bigint,
@@ -724,6 +733,7 @@ view: redshift_query_execution {
     sql_trigger_value: SELECT FLOOR((EXTRACT(epoch from GETDATE()) - 60*60*23)/(60*60*24)) ;; #23h
     sql:
         SELECT
+        --comment
           query ||'.'|| seg || '.' || step as id,
           query, seg, step,
           label::varchar,
