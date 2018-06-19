@@ -44,7 +44,7 @@ explore: redshift_tables {
 }
 
 explore: redshift_plan_steps {
-  hidden: yes
+  hidden: no
   persist_for: "0 seconds"
   join: redshift_tables {
     sql_on: ${redshift_tables.table}=${redshift_plan_steps.table} ;;
@@ -101,7 +101,7 @@ explore: redshift_plan_steps {
 }
 
 explore: redshift_queries {
-  hidden: yes
+  hidden: no
   persist_for: "0 seconds"
 }
 
@@ -111,7 +111,7 @@ explore: redshift_slices {
 }
 
 explore: redshift_query_execution {
-  hidden: yes
+  hidden: no
   persist_for: "0 seconds"
   fields: [ALL_FIELDS*, -redshift_query_execution.emitted_rows_to_table_rows_ratio]
 }
