@@ -506,7 +506,7 @@ view: redshift_slices {
   # This table is visible to all users. Superusers can see all rows; regular users can see only their own data.
   derived_table: {
     #sql_trigger_value: SELECT FLOOR((EXTRACT(epoch from GETDATE()) - 60*60*22)/(60*60*24)) ;; #22h
-    persist_for: "12 hours"
+    persist_for: "1 hours"
     sql: SELECT
     slice,
     node
@@ -537,7 +537,7 @@ view: redshift_slices {
 view: redshift_tables {
   derived_table: {
     # Insert into PDT because redshift won't allow joining certain system tables/views onto others (presumably because they are located only on the leader node)
-    persist_for: "8 hours"
+    persist_for: "1 hours"
     sql: select
         --comment
         "database"::varchar,
@@ -730,7 +730,8 @@ view: redshift_query_execution {
   #description: "Steps from the query planner for recent queries to Redshift"
   derived_table: {
     # Insert into PDT because redshift won't allow joining certain system tables/views onto others (presumably because they are located only on the leader node)
-    sql_trigger_value: SELECT FLOOR((EXTRACT(epoch from GETDATE()) - 60*60*23)/(60*60*24)) ;; #23h
+    # sql_trigger_value: SELECT FLOOR((EXTRACT(epoch from GETDATE()) - 60*60*23)/(60*60*24)) ;; #23h
+    persist_for: "1 hour"
     sql:
         SELECT
         --comment
