@@ -115,7 +115,6 @@ view: redshift_etl_errors {
 view: redshift_data_loads {
   derived_table: {
     sql: select replace(regexp_substr(filename, '//[a-zA-Z0-9\-]+/'), '/', '') as root_bucket
-        --comment
         , replace(filename, split_part(filename, '/', regexp_count(filename, '/') + 1), '') as s3_path
         , regexp_replace(replace(filename, split_part(filename, '/', regexp_count(filename, '/') + 1), ''), '([\\d]{5,}|[\\d\-]{5,}/)', '') as s3_path_clean
         , split_part(filename, '/', regexp_count(filename, '/') + 1) as file_name
@@ -464,7 +463,7 @@ view: redshift_queries {
   }
   measure: count {
     type: count
-    drill_fields: [query, start_date, time_executing, substring]
+    drill_fields: [query, start_minute, time_executing, substring]
   }
   measure: count_of_queued {
     type: sum
